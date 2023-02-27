@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# get the amount of memory in the machine
+mem_total_kb=$(grep MemTotal /proc/meminfo | grep -E --only-matching '[[:digit:]]+')
+mem_total=$((mem_total_kb * 1024))
+
+# create a file for zram loopback device
+touch /.zramswap
+chattr -C /.zramswap
+chmod 600 /.zramswap
+# allocate file to same as zram size
+fallocate -l $mem_total /.zramswap
+
+# create loop device for backing_dev
+losetup /dev/loop0 /.zramswap
+
+# load the dependency module
+modprobe zram
+
+# set zstd compression algorithm
+echo zstd > /sys/block/zram0/comp_algorithm
+# add backing device to loop device above
+echo /dev/loop0 > /sys/block/zram0/backing_dev
+# initialize the device size
+echo $mem_total > /sys/block/zram0/disksize
+
+# Creating the swap filesystem
+mkswap /dev/zram0
+
+# Switch the swaps on, enable discard "-d"
+swapon -d -p 100 /dev/zram0
+
+# writeback incompressible pages
+echo huge > /sys/block/zram0/writeback
+# set pages to be considered idle (and written) until accessed
+# echo all > /sys/block/zram0/idle
+

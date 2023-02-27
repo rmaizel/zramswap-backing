@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Switching off swap
+swapoff /dev/zram0
+# remove loop backing device
+losetup -d /dev/loop0
+# remove the swapfile
+rm /.zramswap
+
+# Disable zram
+rmmod zram
