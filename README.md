@@ -13,3 +13,10 @@ I've also added a few of my own lines for configuration, including:
 - Sending incompressible pages to the backing device instead of keeping them in RAM
 - Enabling DISCARD on the swap device, which helps keep zram space smaller and more performant
 
+---
+
+## External links for reference:
+
+- (https://unix.stackexchange.com/questions/581243/using-loopdev-for-zram-writeback-feature)
+- (https://giorgos.sealabs.net/systemd-unit-to-activate-loopback-devices-before-lvm.html)
+
