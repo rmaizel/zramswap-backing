@@ -6,7 +6,7 @@ mem_total=$((mem_total_kb * 1024))
 
 # create a file for zram loopback device
 touch /.zramswap
-chattr -C /.zramswap
+chattr +C /.zramswap
 chmod 600 /.zramswap
 # allocate file to same as zram size
 fallocate -l $mem_total /.zramswap
